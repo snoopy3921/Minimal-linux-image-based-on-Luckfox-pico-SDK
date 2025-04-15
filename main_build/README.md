@@ -1,5 +1,6 @@
 Structure of main_build project is going to be like this:
 
+```sh
 .
 ├── README                  # Descriptor
 ├── build.sh                # Build script
@@ -13,7 +14,7 @@ Structure of main_build project is going to be like this:
 └── uboot                   # Uboot folder
     ├── rkbin               # Rockchip ultilities to pakage image
     └── u-boot
-
+```
 ## Uboot
 ```sh
 # To build
