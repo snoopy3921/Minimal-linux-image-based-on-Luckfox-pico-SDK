@@ -1,0 +1,7 @@
+Structure of main_build project is going to be like this:
+
+├── Makefile
+├── Readme.md
+└── uboot
+    ├── rkbin
+    └── u-boot
