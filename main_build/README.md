@@ -13,3 +13,12 @@ Structure of main_build project is going to be like this:
 └── uboot                   # Uboot folder
     ├── rkbin               # Rockchip ultilities to pakage image
     └── u-boot
+
+## Uboot
+```sh
+# To build
+cd main_build
+./build.sh uboot
+# To clean
+./build.sh clean_uboot
+```
