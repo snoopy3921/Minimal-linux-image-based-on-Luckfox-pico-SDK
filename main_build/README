@@ -1,0 +1,15 @@
+Structure of main_build project is going to be like this:
+
+.
+├── README                  # Descriptor
+├── build.sh                # Build script
+├── configs                 # Copy folder contains config files
+│   ├── uboot_configs
+│   └── uboot_dts
+├── out                     # Output folder
+│   └── uboot               # Uboot results come here
+├── toolchain               # Toolchain folder contains cross compiler
+│   └── arm-rockchip830-linux-uclibcgnueabihf
+└── uboot                   # Uboot folder
+    ├── rkbin               # Rockchip ultilities to pakage image
+    └── u-boot
