@@ -1,0 +1,6 @@
+{
+      "files.associations": {
+            "vector": "c",
+            "irq_vectors.h": "c"
+      }
+}
