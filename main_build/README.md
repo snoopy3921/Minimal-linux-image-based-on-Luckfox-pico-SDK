@@ -9,9 +9,11 @@ Structure of main_build project is going to be like this:
 │   ├── kernel_dts
 │   ├── uboot_configs
 │   └── uboot_dts       
+├── busybox-1.27.2          # Busybox folder to build rootfs
 |── kernel                  # Rockchip linux kernel folder
 ├── out                     # Output folder
 │   ├── kernel                  # Kernel compiled image
+│   ├── rootfs                  # Rootfs compiled image
 │   └── uboot                   # Uboot compiled image
 ├── toolchain               # Toolchain folder contains cross compiler
 │   └── arm-rockchip830-linux-uclibcgnueabihf
@@ -55,6 +57,7 @@ Hello
 / #
 ```
 I flash image with this tool in Window 11 OS
+
 ![alt text](assets/Soc_tool.png)
 
 
