@@ -107,3 +107,8 @@ The most common outcome is a kernel panic. The kernel will attempt to mount the 
 [    0.215999] VFS: Cannot open root device "xxx" or unknown-block(xx,xx): error -6
 [    0.216019] Please append a correct "root=" boot option; here are the available partitions:
 ```
+To solve it, pass argument root to Uboot by adding this line in ``env.txt``
+```
+sys_bootargs=root=/dev/mmcblk1p5
+```
+/dev/mmcblk1p5 is where rootfs located. Kernel will panic if it can not find rootfs or rootfs is at wrong location.
