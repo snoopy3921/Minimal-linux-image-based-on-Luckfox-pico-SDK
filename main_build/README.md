@@ -18,6 +18,9 @@ Structure of main_build project is going to be like this:
 │   └── uboot                   # Uboot compiled image
 ├── toolchain               # Toolchain folder contains cross compiler
 │   └── arm-rockchip830-linux-uclibcgnueabihf
+├── tools                   # Set of tools, utility
+│   ├── board
+│   └── pc
 └── uboot                   # Uboot folder
     ├── rkbin                   # Rockchip ultilities to pakage image
     └── u-boot                  # Uboot source code
