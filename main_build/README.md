@@ -5,6 +5,7 @@ Structure of main_build project is going to be like this:
 ├── README                  # Descriptor
 ├── build.sh                # Build script
 ├── configs                 # Copy folder contains linked config files
+│   ├── busybox_configs 
 │   ├── kernel_configs
 │   ├── kernel_dts
 │   ├── uboot_configs
