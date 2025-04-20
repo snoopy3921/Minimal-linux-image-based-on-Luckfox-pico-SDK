@@ -1,0 +1,1 @@
+cmd_console-tools/built-in.o :=  rm -f console-tools/built-in.o; /home/giahuy/workspace/Embedded_Linux/luckfox_cam/main_build/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-ar rcs console-tools/built-in.o

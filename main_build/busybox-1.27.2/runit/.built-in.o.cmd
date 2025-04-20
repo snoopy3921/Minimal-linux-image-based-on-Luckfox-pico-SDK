@@ -1,0 +1,1 @@
+cmd_runit/built-in.o :=  rm -f runit/built-in.o; /home/giahuy/workspace/Embedded_Linux/luckfox_cam/main_build/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-ar rcs runit/built-in.o

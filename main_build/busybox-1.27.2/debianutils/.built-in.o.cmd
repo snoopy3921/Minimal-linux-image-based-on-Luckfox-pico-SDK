@@ -1,0 +1,1 @@
+cmd_debianutils/built-in.o :=  rm -f debianutils/built-in.o; /home/giahuy/workspace/Embedded_Linux/luckfox_cam/main_build/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-ar rcs debianutils/built-in.o

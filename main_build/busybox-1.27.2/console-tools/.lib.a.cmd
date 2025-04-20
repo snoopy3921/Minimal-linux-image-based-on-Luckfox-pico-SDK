@@ -1,0 +1,1 @@
+cmd_console-tools/lib.a := rm -f console-tools/lib.a; /home/giahuy/workspace/Embedded_Linux/luckfox_cam/main_build/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-ar  rcs console-tools/lib.a console-tools/chvt.o console-tools/clear.o console-tools/deallocvt.o console-tools/setkeycodes.o console-tools/setlogcons.o

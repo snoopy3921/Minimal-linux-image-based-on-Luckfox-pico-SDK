@@ -1,0 +1,1 @@
+cmd_libpwdgrp/lib.a := rm -f libpwdgrp/lib.a; /home/giahuy/workspace/Embedded_Linux/luckfox_cam/main_build/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-ar  rcs libpwdgrp/lib.a libpwdgrp/pwd_grp.o libpwdgrp/uidgid_get.o

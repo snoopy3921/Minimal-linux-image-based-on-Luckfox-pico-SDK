@@ -1,0 +1,1 @@
+cmd_loginutils/built-in.o :=  rm -f loginutils/built-in.o; /home/giahuy/workspace/Embedded_Linux/luckfox_cam/main_build/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-ar rcs loginutils/built-in.o

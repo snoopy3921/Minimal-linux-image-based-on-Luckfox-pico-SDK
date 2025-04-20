@@ -12,9 +12,13 @@ TOOCHAIN_PREFIX=${PROJECT_TOP_DIR}/toolchain/arm-rockchip830-linux-uclibcgnueabi
 ##########################################################################################
 
 UBOOT_CFG=rv1106_defconfig
+UBOOT_CFG_PARTITION="32K(env),512K@32K(idblock),256K(uboot),32M(boot),6G(rootfs)"
+UBOOT_ENV_PART_SIZE=$(${PROJECT_TOP_DIR}/tools/pc/toolkits/get_part_info.sh \
+				 PART_SIZE ${UBOOT_CFG_PARTITION} env)
 UBOOT_DIR=${PROJECT_TOP_DIR}/uboot/u-boot
 UBOOT_OUT_DIR=${PROJECT_TOP_DIR}/out/uboot
 UBOOT_CONFIGS_FOLDER=${PROJECT_TOP_DIR}/configs/uboot_configs
+UBOOT_ENV_CFG_FILE=${UBOOT_CONFIGS_FOLDER}/.env.txt
 UBOOT_DTS_FOLDER=${PROJECT_TOP_DIR}/configs/uboot_dts
 UBOOT_MAKE_SCRIPT=${PROJECT_TOP_DIR}/uboot/u-boot/make.sh
 
@@ -24,6 +28,7 @@ RK_BIN=${PROJECT_TOP_DIR}/uboot/rkbin
 function build_uboot() {
       echo "============ Start building uboot ============"
       cd ${UBOOT_DIR}
+   
 
       # Prepare by linking config and dts file to modify or use
 	echo "Linking uboot DTS to ${UBOOT_DTS_FOLDER}"
@@ -40,10 +45,18 @@ function build_uboot() {
       done
       echo "Linking uboot configs to ${UBOOT_CONFIGS_FOLDER} done!!!"
 
+
       make distclean
       make ${UBOOT_CFG}
       # ARCH=arm CROSS_COMPILE=arm-rockchip830-linux-uclibcgnueabihf- make
       ./make.sh CROSS_COMPILE=${TOOCHAIN_PREFIX}
+
+      # Make env.img
+      touch ${UBOOT_ENV_CFG_FILE}
+      echo "sys_bootargs=root=/dev/mmcblk1p5" > ${UBOOT_ENV_CFG_FILE}  
+      echo "rootfstype=ext4" >> ${UBOOT_ENV_CFG_FILE}   
+      echo "blkdevparts=mmcblk1:${UBOOT_CFG_PARTITION}" >> ${UBOOT_ENV_CFG_FILE}   
+      ${PROJECT_TOP_DIR}/tools/pc/uboot_tools/mkenvimage -s ${UBOOT_ENV_PART_SIZE} -p 0x0 -o ${PROJECT_TOP_DIR}/out/uboot/env.img ${UBOOT_ENV_CFG_FILE}
 
       #Test and copy compiled uboot.img
       test ! -f ${PROJECT_TOP_DIR}/uboot/u-boot/uboot.img || cp -fv ${PROJECT_TOP_DIR}/uboot/u-boot/uboot.img ${PROJECT_TOP_DIR}/out/uboot
@@ -127,8 +140,55 @@ function clean_kernel(){
       rm -rf -d *
 }
 
+##########################################################################################
+#	ROOTFS with BUSYBOX
+##########################################################################################
+BUSYBOX_VER=busybox-1.27.2
+BUSYBOX_DIR=${PROJECT_TOP_DIR}/${BUSYBOX_VER}
+BUSYBOX_CONFIGS_FOLDER=${PROJECT_TOP_DIR}/configs/busybox_configs
+ROOTFS_OUT_DIR=${PROJECT_TOP_DIR}/out/rootfs
+ARCH_CROSS_CFLAGS="-march=armv7-a -mfpu=neon -mfloat-abi=hard"
 
+ROOTFS_PART_SIZE=$(${PROJECT_TOP_DIR}/tools/pc/toolkits/get_part_info.sh \
+				 PART_SIZE ${UBOOT_CFG_PARTITION} rootfs)
+function build_rootfs(){
+      echo "============ Start building rootfs ============"
+      cd ${BUSYBOX_DIR}
+      make ARCH=arm CROSS_COMPILE=${TOOCHAIN_PREFIX} mrproper
+      make ARCH=arm CROSS_COMPILE=${TOOCHAIN_PREFIX} distclean
+      # Copy busybox config from tools folder and link 
+      cp -f ${PROJECT_TOP_DIR}/tools/board/busybox/config_normal ${BUSYBOX_DIR}/.config
+      ln -rsf ${PROJECT_TOP_DIR}/tools/board/busybox/config_normal ${BUSYBOX_CONFIGS_FOLDER}/config_normal > /dev/null 2>&1
+      
+      # Compile Busybox
+      make ARCH=arm CROSS_COMPILE=${TOOCHAIN_PREFIX}
+      # Building rootfs Busybox
+      export CFLAGS=${ARCH_CROSS_CFLAGS}
+      #rm -rf ${ROOTFS_OUT_DIR}/* 
+      make CROSS_COMPILE=${TOOCHAIN_PREFIX} install CONFIG_PREFIX=./BUSYBOX_INSTALL
+      
+      # Copy rootfs to output folder
+      # Copy init script(first script to be run)
+      cp -f ${BUSYBOX_CONFIGS_FOLDER}/init ${BUSYBOX_DIR}/BUSYBOX_INSTALL 
+      cd ${BUSYBOX_DIR}/BUSYBOX_INSTALL
+      mkdir dev proc sys etc
+      rm linuxrc
+      chmod +x *
 
+      tar -cf ${ROOTFS_OUT_DIR}/rootfs.tar ${BUSYBOX_DIR}/BUSYBOX_INSTALL 
+
+      echo "============ Start building ext4 rootfs ============"
+	cd ${PROJECT_TOP_DIR}/tools/pc/e2fsprogs/
+      ./mkfs_ext4.sh ${BUSYBOX_DIR}/BUSYBOX_INSTALL ${ROOTFS_OUT_DIR}/rootfs.img ${ROOTFS_PART_SIZE}
+}
+
+function clean_rootfs(){
+      echo "============ Start cleaning rootfs ============"
+      cd ${BUSYBOX_DIR}
+      make ARCH=arm CROSS_COMPILE=${TOOCHAIN_PREFIX} mrproper
+      make ARCH=arm CROSS_COMPILE=${TOOCHAIN_PREFIX} distclean
+      rm -rf ${BUSYBOX_DIR}/BUSYBOX_INSTALL 
+}
 
 
 
@@ -150,4 +210,12 @@ fi
 if [ "$1" = "clean" ]; then
       clean_uboot
 	clean_kernel
+      clean_rootfs
+fi
+if [ "${1}" = "rootfs" ]; then
+      export PATH=$(echo "$PATH" | tr -d ' \t\n')
+      build_rootfs
+fi
+if [ "$1" = "clean_rootfs" ]; then
+      clean_rootfs
 fi

@@ -1,0 +1,1 @@
+cmd_selinux/lib.a := rm -f selinux/lib.a; /home/giahuy/workspace/Embedded_Linux/luckfox_cam/main_build/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-ar  rcs selinux/lib.a 

@@ -1,0 +1,1 @@
+cmd_procps/lib.a := rm -f procps/lib.a; /home/giahuy/workspace/Embedded_Linux/luckfox_cam/main_build/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-ar  rcs procps/lib.a procps/free.o procps/fuser.o procps/kill.o procps/lsof.o procps/ps.o procps/sysctl.o procps/top.o procps/uptime.o procps/watch.o
