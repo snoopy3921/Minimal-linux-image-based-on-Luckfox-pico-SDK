@@ -5,13 +5,15 @@ Structure of main_build project is going to be like this:
 ├── README                  # Descriptor
 ├── build.sh                # Build script
 ├── configs                 # Copy folder contains linked config files
+│   ├── buildroot_roofs_configs 
 │   ├── busybox_configs 
 │   ├── kernel_configs
 │   ├── kernel_dts
 │   ├── uboot_configs
 │   └── uboot_dts       
 ├── busybox-1.27.2          # Busybox folder to build rootfs
-|── kernel                  # Rockchip linux kernel folder
+├── buildroot-2023.02.6     # Buildroot folder to build rootfs
+├── kernel                  # Rockchip linux kernel folder
 ├── out                     # Output folder
 │   ├── kernel                  # Kernel compiled image
 │   ├── rootfs                  # Rootfs compiled image
@@ -47,7 +49,7 @@ After this step we got Linux running, if Kernel log message is shown till error 
 ```sh
 # To build
 cd main_build
-./build.sh rootfs
+./build.sh rootfs busybox
 # To clean
 ./build.sh clean_rootfs
 ```
@@ -60,6 +62,27 @@ sbin        usr         sys         bin
 Hello
 / #
 ```
+
+## Rootfs with buildroot
+Buildroot builds the rootfs more complete with additional utilities and configurations.
+```sh
+# To build
+cd main_build
+./build.sh rootfs buildroot
+# To clean
+./build.sh clean_rootfs
+```
+
+```sh
+ls /
+bin         lib         lost+found  opt         run         tmp
+dev         lib32       media       proc        sbin        usr
+etc         linuxrc     mnt         root        sys         var
+```
+
+
+
+
 I flash image with this tool in Window 11 OS
 
 ![alt text](main_build/assets/Soc_tool.png)
