@@ -151,7 +151,7 @@ ARCH_CROSS_CFLAGS="-march=armv7-a -mfpu=neon -mfloat-abi=hard"
 
 ROOTFS_PART_SIZE=$(${PROJECT_TOP_DIR}/tools/pc/toolkits/get_part_info.sh \
 				 PART_SIZE ${UBOOT_CFG_PARTITION} rootfs)
-function build_rootfs(){
+function rootfs_busybox(){
       echo "============ Start building rootfs ============"
       cd ${BUSYBOX_DIR}
       make ARCH=arm CROSS_COMPILE=${TOOCHAIN_PREFIX} mrproper
@@ -182,15 +182,41 @@ function build_rootfs(){
       ./mkfs_ext4.sh ${BUSYBOX_DIR}/BUSYBOX_INSTALL ${ROOTFS_OUT_DIR}/rootfs.img ${ROOTFS_PART_SIZE}
 }
 
+
+##########################################################################################
+#	ROOTFS with BUILDROOT
+##########################################################################################
+BUILDROOT_VER=buildroot-2023.02.6
+BUILDROOT_DIR=${PROJECT_TOP_DIR}/${BUILDROOT_VER}
+BUILDROOT_CONFIGS_FOLDER=${PROJECT_TOP_DIR}/configs/buildroot_roofs_configs
+BUILDROOT_OUT_DIR=${PROJECT_TOP_DIR}/out/rootfs
+ARCH_CROSS_CFLAGS="-march=armv7-a -mfpu=neon -mfloat-abi=hard"
+BUILDROOT_CFG=luckfox_pico_defconfig
+BUILDROOT_CFG_PATH=${BUILDROOT_CONFIGS_FOLDER}/${BUILDROOT_CFG}
+function rootfs_buildroot(){
+      echo "============ Start building rootfs ============"
+      cd ${BUILDROOT_DIR}
+      # Config
+      cp ${BUILDROOT_CONFIGS_FOLDER}/luckfox_cam_defconfig ${BUILDROOT_DIR}/configs
+      make luckfox_cam_defconfig
+      # Build rootfs
+      make 
+
+      cp ${BUILDROOT_DIR}/output/images/rootfs.ext4 ${ROOTFS_OUT_DIR}/rootfs.img
+}
+
+
 function clean_rootfs(){
       echo "============ Start cleaning rootfs ============"
       cd ${BUSYBOX_DIR}
       make ARCH=arm CROSS_COMPILE=${TOOCHAIN_PREFIX} mrproper
       make ARCH=arm CROSS_COMPILE=${TOOCHAIN_PREFIX} distclean
       rm -rf ${BUSYBOX_DIR}/BUSYBOX_INSTALL 
+
+      cd ${BUILDROOT_DIR}
+      make distclean
+      make clean
 }
-
-
 
 
 
@@ -214,7 +240,11 @@ if [ "$1" = "clean" ]; then
 fi
 if [ "${1}" = "rootfs" ]; then
       export PATH=$(echo "$PATH" | tr -d ' \t\n')
-      build_rootfs
+      if [ "${2}" = "busybox" ]; then
+            rootfs_busybox
+      elif [ "${2}" = "buildroot" ]; then
+            rootfs_buildroot
+      fi
 fi
 if [ "$1" = "clean_rootfs" ]; then
       clean_rootfs
